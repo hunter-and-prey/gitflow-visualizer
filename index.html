@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitFlow Visualizer & Commit Helper | 互動式 Git 流程與提交輔助工具</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="一個專為開發者設計的極致視覺化 Git 學習與提交輔助工具。支援互動式分支樹狀圖動態渲染、常規提交（Conventional Commits）視覺化產生器，以及 Git Flow / GitHub Flow 實戰教學場景，協助您寫出完美的 Git Commit 並掌握分支工作流。">
+    <meta name="keywords" content="Git, GitFlow, GitHub Flow, Git Visualizer, Conventional Commits, Commit Helper, 開源工具, 開發者工具">
+    <meta name="author" content="張紘睿">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="GitFlow Visualizer & Commit Helper | 互動式 Git 流程與提交輔助工具">
+    <meta property="og:description" content="一個專為開發者設計的極致視覺化 Git 學習與提交輔助工具。支援互動式分支樹狀圖動態渲染、常規提交（Conventional Commits）視覺化產生器，以及 Git Flow / GitHub Flow 實戰教學場景，協助您寫出完美的 Git Commit 並掌握分支工作流。">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618401471353-b98aedd07871?q=80&w=1200&auto=format&fit=crop">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="GitFlow Visualizer & Commit Helper | 互動式 Git 流程與提交輔助工具">
+    <meta property="twitter:description" content="一個專為開發者設計的極致視覺化 Git 學習與提交輔助工具。支援互動式分支樹狀圖動態渲染、常規提交（Conventional Commits）視覺化產生器，以及 Git Flow / GitHub Flow 實戰教學場景，協助您寫出完美的 Git Commit 並掌握分支工作流。">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Premium Ambient Glow Effect Background -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <i data-lucide="git-branch" class="logo-icon animate-pulse"></i>
+                <span class="logo-text">GitFlow <span class="accent-text">Visualizer</span></span>
+                <span class="badge">Open Source</span>
+            </div>
+            <nav class="header-nav">
+                <a href="#visualizer-section" class="nav-link active"><i data-lucide="monitor"></i> 互動模擬器</a>
+                <a href="#generator-section" class="nav-link"><i data-lucide="terminal"></i> Commit 產生器</a>
+                <a href="#tutorial-section" class="nav-link"><i data-lucide="book-open"></i> 教學場景</a>
+                <a href="https://github.com" target="_blank" class="github-btn"><i data-lucide="github"></i> Star 支援</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="app-container">
+        
+        <!-- Quick Stats Banner -->
+        <section class="banner-section animate-fade-in">
+            <div class="banner-card glass">
+                <div class="banner-content">
+                    <h1>掌控您的 Git 工作流。</h1>
+                    <p>互動式動態 SVG 渲染，完美整合 Conventional Commits 規範。為您的開源專案打下最優質的提交基礎。</p>
+                </div>
+                <div class="banner-actions">
+                    <button class="btn btn-primary" onclick="scrollToSection('visualizer-section')">
+                        <i data-lucide="play"></i> 開始互動模擬
+                    </button>
+                    <button class="btn btn-secondary" onclick="scrollToSection('tutorial-section')">
+                        <i data-lucide="graduation-cap"></i> 學習經典流程
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Workspace Section -->
+        <section id="visualizer-section" class="workspace-section">
+            
+            <!-- Left Panel: Controls, Commit Generator & Presets -->
+            <div class="left-panel glass">
+                
+                <!-- Tab Headers -->
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="interactive-ctrl">
+                        <i data-lucide="sliders"></i> 快捷操作
+                    </button>
+                    <button class="tab-btn" data-tab="commit-builder">
+                        <i data-lucide="edit-3"></i> Commit 產生器
+                    </button>
+                    <button class="tab-btn" data-tab="scenario-list">
+                        <i data-lucide="award"></i> 教學挑戰
+                    </button>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="tabs-content">
+                    
+                    <!-- TAB 1: INTERACTIVE CONTROLS -->
+                    <div class="tab-pane active" id="interactive-ctrl">
+                        <div class="control-group">
+                            <h3><i data-lucide="terminal" class="icon-sm"></i> 虛擬命令行操作</h3>
+                            <div class="terminal-input-wrapper">
+                                <span class="prompt">$ git</span>
+                                <input type="text" id="terminal-cli" placeholder="commit -m 'message' 或 branch feature/login..." autocomplete="off">
+                                <button id="cli-execute-btn" class="btn btn-terminal"><i data-lucide="corner-down-left"></i></button>
+                            </div>
+                            <span class="cli-hint">提示：輸入 <code>help</code> 查看可用虛擬命令</span>
+                        </div>
+
+                        <div class="control-group">
+                            <h3><i data-lucide="mouse-pointer" class="icon-sm"></i> 快捷按鈕操作</h3>
+                            <div class="quick-buttons-grid">
+                                <button class="btn-quick btn-commit" id="quick-commit-btn" title="在目前分支建立一個新提交">
+                                    <i data-lucide="plus-circle"></i>
+                                    <span>git commit</span>
+                                </button>
+                                <button class="btn-quick btn-branch" id="quick-branch-btn" title="建立一個新分支">
+                                    <i data-lucide="git-fork"></i>
+                                    <span>git branch</span>
+                                </button>
+                                <button class="btn-quick btn-checkout" id="quick-checkout-btn" title="切換至其他分支">
+                                    <i data-lucide="git-pull-request"></i>
+                                    <span>git checkout</span>
+                                </button>
+                                <button class="btn-quick btn-merge" id="quick-merge-btn" title="合併另一個分支到目前分支">
+                                    <i data-lucide="git-merge"></i>
+                                    <span>git merge</span>
+                                </button>
+                                <button class="btn-quick btn-rebase" id="quick-rebase-btn" title="將目前分支 Rebase 至目標分支">
+                                    <i data-lucide="refresh-cw"></i>
+                                    <span>git rebase</span>
+                                </button>
+                                <button class="btn-quick btn-reset" id="quick-reset-btn" title="重設模擬器狀態">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    <span>Reset</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="status-card glass-inner">
+                                <div class="status-row">
+                                    <span class="status-label">目前分支:</span>
+                                    <span class="status-value highlight" id="active-branch-indicator">main</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">提交總數:</span>
+                                    <span class="status-value" id="commit-count-indicator">1</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Virtual Command Log Terminal -->
+                        <div class="terminal-log-container">
+                            <div class="terminal-log-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                                <span class="terminal-title">Console Output</span>
+                                <button class="clear-terminal-btn" id="clear-log-btn" title="清空終端記錄"><i data-lucide="trash-2"></i></button>
+                            </div>
+                            <div class="terminal-log-body" id="terminal-log">
+                                <div class="log-line system">&gt;&gt; GitFlow 模擬器初始化成功。</div>
+                                <div class="log-line system">&gt;&gt; 已在 main 分支建立初始提交 (C0)。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: CONVENTIONAL COMMIT BUILDER -->
+                    <div class="tab-pane" id="commit-builder">
+                        <form id="commit-form" class="commit-form-container">
+                            <div class="form-row">
+                                <label for="commit-type"><i data-lucide="tag"></i> 提交類型 (Type)</label>
+                                <select id="commit-type" required>
+                                    <option value="feat">feat ✨ 新功能 (Feature)</option>
+                                    <option value="fix">fix 🐛 錯誤修復 (Bug Fix)</option>
+                                    <option value="docs">docs 📝 文件修改 (Documentation)</option>
+                                    <option value="style">style 🎨 格式/風格調整 (Code Formatting)</option>
+                                    <option value="refactor">refactor ♻️ 程式碼重構 (Code Refactoring)</option>
+                                    <option value="perf">perf ⚡ 效能優化 (Performance Improvement)</option>
+                                    <option value="test">test ✅ 新增/修改測試 (Tests)</option>
+                                    <option value="chore">chore 🔧 建置程序/輔助工具變更 (Chore)</option>
+                                    <option value="ci">ci 👷 CI/CD 自動化流程配置 (CI)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="commit-scope"><i data-lucide="box"></i> 影響範圍 (Scope) <span class="optional">（選填）</span></label>
+                                <input type="text" id="commit-scope" placeholder="例如: auth, ui, api, database...">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="commit-subject"><i data-lucide="text"></i> 簡短描述 (Subject)</label>
+                                <input type="text" id="commit-subject" placeholder="使用祈使句，首字不加粗..." required>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="commit-body"><i data-lucide="align-left"></i> 詳細說明 (Body) <span class="optional">（選填）</span></label>
+                                <textarea id="commit-body" placeholder="解釋為什麼要做這個修改，以及修改的邏輯..." rows="3"></textarea>
+                            </div>
+
+                            <div class="form-row checkbox-row">
+                                <input type="checkbox" id="commit-breaking">
+                                <label for="commit-breaking">
+                                    <i data-lucide="alert-triangle" class="warning-icon"></i> 
+                                    <strong>重大變更 (Breaking Change)</strong>
+                                </label>
+                            </div>
+
+                            <div class="form-row" id="breaking-desc-container" style="display: none;">
+                                <label for="commit-breaking-desc">重大變更描述</label>
+                                <input type="text" id="commit-breaking-desc" placeholder="說明破壞性相容的改變...">
+                            </div>
+
+                            <!-- Live Preview Area -->
+                            <div class="preview-area">
+                                <h4>即時 Commit 預覽</h4>
+                                <div class="preview-box">
+                                    <code id="commit-preview-text">feat: 初始設定</code>
+                                </div>
+                            </div>
+
+                            <div class="commit-form-actions">
+                                <button type="button" id="copy-commit-btn" class="btn btn-secondary flex-grow">
+                                    <i data-lucide="copy"></i> 複製命令
+                                </button>
+                                <button type="submit" id="execute-commit-btn" class="btn btn-primary flex-grow">
+                                    <i data-lucide="send"></i> 送出並提交
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- TAB 3: SCENARIOS & CHALLENGES -->
+                    <div class="tab-pane" id="scenario-list">
+                        <div class="scenarios-wrapper">
+                            <p class="scenarios-intro">點擊下方經典開源工作流，啟動 step-by-step 互動教學引導：</p>
+                            
+                            <!-- Scenario Card 1 -->
+                            <div class="scenario-card active" data-scenario="github-flow">
+                                <div class="scenario-card-header">
+                                    <span class="scenario-badge green">推薦</span>
+                                    <h4>GitHub Flow</h4>
+                                </div>
+                                <p>適合大多數開源專案。以 main 分支為核心，每次新功能或修復皆建立 Feature 分支，透過 Pull Request 合併。</p>
+                                <button class="btn btn-scenario-start" onclick="loadScenario('github-flow')">啟動此挑戰</button>
+                            </div>
+
+                            <!-- Scenario Card 2 -->
+                            <div class="scenario-card" data-scenario="git-flow">
+                                <div class="scenario-card-header">
+                                    <span class="scenario-badge blue">標準</span>
+                                    <h4>Git Flow (經典)</h4>
+                                </div>
+                                <p>適合大型企業級/複雜產品釋出。區分 main、develop、feature、release 與 hotfix 分支的完整模型。</p>
+                                <button class="btn btn-scenario-start" onclick="loadScenario('git-flow')">啟動此挑戰</button>
+                            </div>
+                        </div>
+
+                        <!-- Tutorial Step Guide (Visible when active) -->
+                        <div class="tutorial-guide-container glass-inner" id="tutorial-guide-box" style="display: none;">
+                            <div class="guide-header">
+                                <h4 id="guide-title">GitHub Flow 教學引導</h4>
+                                <span class="step-progress" id="guide-progress">步驟 1 / 4</span>
+                            </div>
+                            <div class="guide-body">
+                                <p id="guide-instructions">建立分支以開發新功能：請輸入 <code>git branch feature/login</code> 或點擊捷徑按鈕建立新分支。</p>
+                                <div class="guide-action-alert" id="guide-next-hint">待完成：建立 feature/login 分支</div>
+                            </div>
+                            <div class="guide-footer">
+                                <button class="btn btn-guide-prev" id="guide-prev-btn" disabled><i data-lucide="chevron-left"></i> 上一步</button>
+                                <button class="btn btn-guide-next" id="guide-next-btn"><i data-lucide="zap"></i> 自動帶入並執行命令</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Right Panel: Visualized SVG Graph -->
+            <div class="right-panel">
+                <div class="visualizer-container glass">
+                    <div class="visualizer-header">
+                        <div class="panel-title">
+                            <i data-lucide="git-branch" class="accent-text"></i>
+                            <h2>動態分支渲染樹狀圖 (Interactive SVG Graph)</h2>
+                        </div>
+                        <div class="visualizer-legend">
+                            <div class="legend-item"><span class="legend-dot main"></span> main</div>
+                            <div class="legend-item develop-legend" style="display: none;"><span class="legend-dot develop"></span> develop</div>
+                            <div class="legend-item"><span class="legend-dot feature"></span> feature/*</div>
+                            <div class="legend-item release-legend" style="display: none;"><span class="legend-dot release"></span> release/*</div>
+                            <div class="legend-item hotfix-legend" style="display: none;"><span class="legend-dot hotfix"></span> hotfix/*</div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas/SVG Graph Wrapper -->
+                    <div class="graph-wrapper" id="svg-graph-wrapper">
+                        <!-- SVG dynamically injected by app.js -->
+                        <svg id="git-svg" width="100%" height="100%" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet">
+                            <!-- SVG elements dynamically rendered here -->
+                        </svg>
+                    </div>
+
+                    <!-- Detailed Commit Inspector -->
+                    <div class="commit-inspector-card glass-inner" id="inspector-card" style="opacity: 0;">
+                        <div class="inspector-header">
+                            <span class="inspector-badge" id="inspector-hash">C0</span>
+                            <h4 id="inspector-subject">Initial commit</h4>
+                            <span class="inspector-branch" id="inspector-branch-tag">main</span>
+                        </div>
+                        <div class="inspector-body">
+                            <div class="inspector-meta">
+                                <div><strong>作者：</strong> <span id="inspector-author">張紘睿</span></div>
+                                <div><strong>時間：</strong> <span id="inspector-date">2026-06-02</span></div>
+                            </div>
+                            <p class="inspector-desc" id="inspector-body-desc">這個提交沒有提供詳細描述。</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Features Showcase Section -->
+        <section id="generator-section" class="features-section">
+            <h2 class="section-title">為什麼選擇常規提交 (Conventional Commits)？</h2>
+            <div class="features-grid">
+                <div class="feature-card glass">
+                    <div class="feature-icon-wrapper"><i data-lucide="sparkles"></i></div>
+                    <h3>自動生成變更日誌 (Changelogs)</h3>
+                    <p>標準的 Conventional Commit 讓工都可以自動掃描所有 Commit，並在發布新版本時一鍵產生精美的 <code>CHANGELOG.md</code>。</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feature-icon-wrapper"><i data-lucide="git-pull-request"></i></div>
+                    <h3>提高 Code Review 效率</h3>
+                    <p>協作者或開源維護者能夠在第一時間透過 <code>feat:</code>、<code>fix:</code>、<code>refactor:</code> 等前綴掌握變更性質，大幅加速 PR 審核速度。</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feature-icon-wrapper"><i data-lucide="shield-check"></i></div>
+                    <h3>完美銜接 CI/CD 自動化</h3>
+                    <p>語意化的提交訊息可觸發自動化腳本，例如：自動進行語意化版本號升級 (Semantic Versioning 升級 patch, minor 或 major)。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Scene Explainer Section -->
+        <section id="tutorial-section" class="scene-explainer-section">
+            <div class="section-header-centered">
+                <h2>探索開源工作流精髓</h2>
+                <p>選擇適合您專案的分支管理策略，提升團隊協作效率</p>
+            </div>
+            
+            <div class="scene-container">
+                <div class="scene-detail-card glass animate-slide-up">
+                    <div class="scene-badge flow-github">GitHub Flow</div>
+                    <h3>GitHub Flow — 輕量、敏捷的開源標準</h3>
+                    <p>適合持續發布的網頁應用程式與大多數熱門開源專案：</p>
+                    <ul class="styled-list">
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>單一主要分支：</strong> <code>main</code> 是唯一的主幹，永遠保持可發布狀態。</li>
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>功能分支開發：</strong> 開發任何功能或修復都從 main 分支拉出命名清晰的分支。</li>
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>Pull Request 審查：</strong> 程式碼完成後提交 PR，由核心開發者審查、討論與測試。</li>
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>即刻合併：</strong> 通過 CI 測試與審查後，直接 Merge 回 main 分支並自動部署。</li>
+                    </ul>
+                </div>
+
+                <div class="scene-detail-card glass animate-slide-up">
+                    <div class="scene-badge flow-git">Git Flow</div>
+                    <h3>Git Flow — 嚴謹、多版本的發布模型</h3>
+                    <p>適合有固定發布週期、需支援舊版本維護的大型軟體專案：</p>
+                    <ul class="styled-list">
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>雙主幹分支：</strong> <code>main</code> (生產環境) 與 <code>develop</code> (測試整合環境)。</li>
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>Feature 分支：</strong> 專注於開發特定新功能，完成後合併回 develop。</li>
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>Release 分支：</strong> 準備發布新版本時從 develop 拉出，專職 Bug 修復與測試。</li>
+                        <li><i data-lucide="check-circle" class="list-bullet"></i> <strong>Hotfix 分支：</strong> 生產環境發現緊急漏洞，直接從 main 拉出修復，後合併回 main 與 develop。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>&copy; 2026 GitFlow Visualizer. 本專案採用 <a href="LICENSE">MIT 授權條款</a> 開源釋出。</p>
+                <p class="author-credits">Made with 💖 by <span class="highlight">張紘睿</span> for Open Source Developers.</p>
+            </div>
+            <div class="footer-right">
+                <a href="https://github.com" target="_blank" class="footer-link"><i data-lucide="github"></i> GitHub</a>
+                <a href="#" class="footer-link"><i data-lucide="globe"></i> 說明文件</a>
+                <a href="#" class="footer-link" onclick="window.print()"><i data-lucide="printer"></i> 列印教學</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals for interactive actions -->
+    <div class="modal" id="interactive-modal" style="display: none;">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3 id="modal-title">建立新分支</h3>
+                <button class="modal-close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Dynamically filled by app.js -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" id="modal-confirm-btn">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
